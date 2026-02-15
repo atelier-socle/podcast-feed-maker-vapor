@@ -1,7 +1,7 @@
 import PodcastFeedMaker
 import Vapor
 
-/// Encodes a ``PodcastFeed`` into an HTTP response with RSS XML body and proper headers.
+/// Encodes a `PodcastFeed` into an HTTP response with RSS XML body and proper headers.
 ///
 /// Headers set:
 /// - `Content-Type: application/rss+xml; charset=utf-8`

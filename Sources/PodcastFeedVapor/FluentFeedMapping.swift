@@ -1,6 +1,6 @@
 import PodcastFeedMaker
 
-/// A type that can be converted into a ``PodcastFeed``.
+/// A type that can be converted into a `PodcastFeed`.
 ///
 /// Conform your Fluent models (or any type) to this protocol to enable
 /// automatic feed generation from database records.
@@ -13,11 +13,11 @@ import PodcastFeedMaker
 /// }
 /// ```
 public protocol FeedMappable: Sendable {
-    /// Converts this instance into a ``PodcastFeed``.
+    /// Converts this instance into a `PodcastFeed`.
     func toPodcastFeed() -> PodcastFeed
 }
 
-/// A type that can be converted into a podcast feed ``Channel``.
+/// A type that can be converted into a podcast feed `Channel`.
 ///
 /// ```swift
 /// extension Show: ChannelMappable {
@@ -27,14 +27,14 @@ public protocol FeedMappable: Sendable {
 /// }
 /// ```
 public protocol ChannelMappable: Sendable {
-    /// Converts this instance into a ``Channel`` with the given items.
+    /// Converts this instance into a `Channel` with the given items.
     ///
     /// - Parameter items: The episode items to include in the channel.
-    /// - Returns: A configured ``Channel``.
+    /// - Returns: A configured `Channel`.
     func toChannel(items: [Item]) -> Channel
 }
 
-/// A type that can be converted into a podcast feed ``Item``.
+/// A type that can be converted into a podcast feed `Item`.
 ///
 /// ```swift
 /// extension Episode: ItemMappable {
@@ -44,12 +44,12 @@ public protocol ChannelMappable: Sendable {
 /// }
 /// ```
 public protocol ItemMappable: Sendable {
-    /// Converts this instance into an ``Item``.
+    /// Converts this instance into an `Item`.
     func toItem() -> Item
 }
 
 extension Array where Element: ItemMappable {
-    /// Converts an array of `ItemMappable` elements into an array of ``Item``.
+    /// Converts an array of `ItemMappable` elements into an array of `Item`.
     public func toItems() -> [Item] {
         map { $0.toItem() }
     }

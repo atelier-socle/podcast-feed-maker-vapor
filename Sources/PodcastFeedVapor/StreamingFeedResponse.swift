@@ -1,8 +1,8 @@
 import PodcastFeedMaker
 import Vapor
 
-/// Creates a streaming HTTP response from a ``PodcastFeed`` using
-/// PodcastFeedMaker's ``StreamingFeedGenerator``.
+/// Creates a streaming HTTP response from a `PodcastFeed` using
+/// PodcastFeedMaker's `StreamingFeedGenerator`.
 ///
 /// For feeds with thousands of episodes, this avoids building the entire XML
 /// string in memory. Instead, XML chunks are streamed directly to the client.
@@ -17,7 +17,7 @@ public struct StreamingFeedResponse: Sendable {
 
     /// Creates a streaming HTTP response for a podcast feed.
     ///
-    /// Uses ``StreamingFeedGenerator`` to produce XML chunks that are
+    /// Uses `StreamingFeedGenerator` to produce XML chunks that are
     /// written to the response body as they are generated.
     ///
     /// - Parameters:
