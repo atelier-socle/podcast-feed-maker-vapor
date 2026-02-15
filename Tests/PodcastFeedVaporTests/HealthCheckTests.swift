@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 import VaporTesting
 
@@ -23,6 +24,43 @@ struct HealthCheckTests {
         )
     }
 
+    @Test("Health response includes version")
+    func includesVersion() async throws {
+        try await withApp(
+            configure: { app in
+                app.healthCheck()
+            },
+            { app in
+                try await app.testing().test(
+                    .GET, "health",
+                    afterResponse: { res in
+                        let body = res.body.string
+                        #expect(body.contains("version"))
+                        #expect(body.contains("0.1.0"))
+                    }
+                )
+            }
+        )
+    }
+
+    @Test("Health response includes uptime")
+    func includesUptime() async throws {
+        try await withApp(
+            configure: { app in
+                app.healthCheck()
+            },
+            { app in
+                try await app.testing().test(
+                    .GET, "health",
+                    afterResponse: { res in
+                        let body = res.body.string
+                        #expect(body.contains("uptime"))
+                    }
+                )
+            }
+        )
+    }
+
     @Test("Custom health path")
     func customHealthPath() async throws {
         try await withApp(
@@ -34,9 +72,22 @@ struct HealthCheckTests {
                     .GET, "status",
                     afterResponse: { res in
                         #expect(res.status == .ok)
+                        #expect(res.body.string.contains("ok"))
                     }
                 )
             }
         )
+    }
+
+    @Test("HealthResponse is Codable")
+    func healthResponseCodable() throws {
+        let response = HealthResponse(status: "ok", version: "0.1.0", uptime: 3600)
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(response)
+        let decoder = JSONDecoder()
+        let decoded = try decoder.decode(HealthResponse.self, from: data)
+        #expect(decoded.status == "ok")
+        #expect(decoded.version == "0.1.0")
+        #expect(decoded.uptime == 3600)
     }
 }
