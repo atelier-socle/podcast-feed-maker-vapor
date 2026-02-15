@@ -15,7 +15,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/redis.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
-        .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0")
+        .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3")
     ],
     targets: [
         // Core — PodcastFeedMaker + Vapor + Fluent (no Redis/Queues)
