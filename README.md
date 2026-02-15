@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/atelier-socle/podcast-feed-maker-vapor/graph/badge.svg?token=OYPTW4QW7T)](https://codecov.io/gh/atelier-socle/podcast-feed-maker-vapor)
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20|%20Linux-blue.svg)]()
+[![Documentation](https://img.shields.io/badge/Documentation-DocC-blue.svg)](https://atelier-socle.github.io/podcast-feed-maker-vapor/documentation/podcastfeedvapor/)
 
 ![podcast-feed-maker-vapor](./assets/banner.png)
 
@@ -237,7 +238,7 @@ See [`scripts/setup-sample-server.sh`](scripts/setup-sample-server.sh) for the f
 
 ## Documentation
 
-Full API documentation is available as a DocC catalog bundled with the package. Open the project in Xcode and select **Product > Build Documentation** to browse it locally.
+Full API documentation is available as a [DocC catalog hosted on GitHub Pages](https://atelier-socle.github.io/podcast-feed-maker-vapor/documentation/podcastfeedvapor/) and bundled with the package. Open the project in Xcode and select **Product > Build Documentation** to browse it locally.
 
 Guides:
 
