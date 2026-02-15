@@ -6,11 +6,25 @@
 /// ## Quick Start
 ///
 /// ```swift
+/// import Vapor
 /// import PodcastFeedVapor
+/// import PodcastFeedMaker
 ///
 /// func configure(_ app: Application) throws {
+///     app.middleware.use(PodcastFeedMiddleware())
 ///     app.healthCheck()
+///
+///     app.podcastFeed("feed.xml") { req in
+///         PodcastFeed(version: "2.0", namespaces: [], channel: myChannel)
+///     }
 /// }
 /// ```
+///
+/// ## Key Types
+///
+/// - ``PodcastFeedMiddleware``: Global middleware for feed headers
+/// - ``FeedConfiguration``: Centralized settings (TTL, gzip, pretty-print)
+/// - ``FeedResponseEncoder``: Converts `PodcastFeed` to HTTP Response
+/// - ``FeedMappable``: Protocol for model to feed conversion
 import PodcastFeedMaker
 import Vapor
