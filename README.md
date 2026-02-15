@@ -193,9 +193,34 @@ Sources/
 
 ---
 
+## Sample Server
+
+A companion test server demonstrates all features with real HTTP endpoints. Run the setup script to scaffold it as a sibling directory:
+```bash
+./scripts/setup-sample-server.sh
+cd ../sample-vapor-server
+swift run
+```
+
+Or specify a custom path:
+```bash
+./scripts/setup-sample-server.sh /path/to/my-test-server
+```
+
+Then test with curl:
+```bash
+curl http://localhost:8080/health
+curl http://localhost:8080/feed.xml
+curl -sI http://localhost:8080/feed.xml | grep etag
+curl "http://localhost:8080/feeds/audit?urls=https://feeds.simplecast.com/54nAGcIl"
+```
+
+See [`scripts/setup-sample-server.sh`](scripts/setup-sample-server.sh) for the full list of endpoints and test scenarios.
+
+---
+
 ## Roadmap
 
-- **DocC hosted documentation** — GitHub Pages deployment
 - **Streaming cache** — Stream-through caching for very large feeds
 - **Metrics** — Prometheus/StatsD middleware for feed serving metrics
 - **WebSocket Podping** — Real-time podping via WebSocket instead of webhook
