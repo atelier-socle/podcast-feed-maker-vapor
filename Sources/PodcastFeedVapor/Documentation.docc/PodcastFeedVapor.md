@@ -62,6 +62,7 @@ func configure(_ app: Application) throws {
 - <doc:FluentIntegration>
 - <doc:AdvancedFeatures>
 - <doc:RedisAndQueues>
+- <doc:MetricsGuide>
 
 ### Configuration
 

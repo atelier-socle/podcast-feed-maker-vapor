@@ -7,7 +7,7 @@ import Vapor
 /// Caches generated podcast feed XML in Redis with configurable TTL.
 /// Uses Vapor's Redis integration for connection pooling and async/await support.
 ///
-/// ```swift 
+/// ```swift
 /// import PodcastFeedVaporRedis
 ///
 /// // In configure.swift

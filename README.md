@@ -25,6 +25,7 @@ Part of the [Atelier Socle](https://www.atelier-socle.com) ecosystem.
 - **Fluent Mapping** — Pure Swift protocols for model-to-feed conversion
 - **Redis Cache** — Optional `FeedCacheStore` protocol + Redis implementation
 - **Queue Workers** — Optional background feed regeneration via Vapor Queues
+- **Metrics** — Feed request counters, latency timers, and response size recording via swift-metrics
 - **Strict concurrency** — All types Sendable, Swift 6.2 strict concurrency
 
 ---
@@ -48,7 +49,7 @@ dependencies: [
 ]
 ```
 
-Three products are available — import only what you need:
+Four products are available — import only what you need:
 
 ```swift
 // Core (required) — middleware, routes, encoding, Fluent mapping
@@ -59,6 +60,9 @@ Three products are available — import only what you need:
 
 // Optional — Background feed regeneration jobs
 .product(name: "PodcastFeedVaporQueues", package: "podcast-feed-maker-vapor")
+
+// Optional — Feed serving metrics (Prometheus, StatsD, etc.)
+.product(name: "PodcastFeedVaporMetrics", package: "podcast-feed-maker-vapor")
 ```
 
 ---
@@ -145,6 +149,20 @@ app.batchAudit("feeds", "audit")
 // GET /feeds/audit?urls=https://a.com/feed.xml,https://b.com/feed.xml
 ```
 
+### Metrics
+
+Optional target for feed serving observability. Uses Apple's swift-metrics API — plug in any backend:
+
+```swift
+import PodcastFeedVaporMetrics
+
+// Add metrics before other feed middleware
+app.middleware.use(FeedMetricsMiddleware())
+app.middleware.use(PodcastFeedMiddleware())
+```
+
+Emits: `pfv_feed_requests_total` (counter), `pfv_feed_request_duration_seconds` (timer), `pfv_feed_response_size_bytes` (recorder), `pfv_feed_active_streams` (gauge).
+
 ### Redis and Queues
 
 Optional targets for production scale — no Redis/Queues dependency in core:
@@ -190,6 +208,10 @@ Sources/
         RedisFeedCache.swift
     PodcastFeedVaporQueues/        # Optional queue workers
         FeedRegenerationJob.swift
+    PodcastFeedVaporMetrics/       # Optional metrics middleware
+        FeedMetricsMiddleware.swift
+        FeedMetricsConfiguration.swift
+        FeedActiveStreamsGauge.swift
 ```
 
 ---
@@ -222,9 +244,9 @@ See [`scripts/setup-sample-server.sh`](scripts/setup-sample-server.sh) for the f
 
 ## Roadmap
 
-- **Streaming cache** — Stream-through caching for very large feeds
-- **Metrics** — Prometheus/StatsD middleware for feed serving metrics
-- **WebSocket Podping** — Real-time podping via WebSocket instead of webhook
+- [x] **Streaming cache** — Stream-through caching for very large feeds
+- [x] **Metrics** — Prometheus/StatsD middleware for feed serving metrics
+- [ ] **WebSocket Podping** — Real-time podping via WebSocket instead of webhook
 
 ---
 
@@ -250,6 +272,7 @@ Guides:
 | Fluent Integration | Protocol-based model mapping |
 | Advanced Features | Podping, batch audit, and health check |
 | Redis and Queues | Optional production targets |
+| Metrics | Feed serving metrics via swift-metrics |
 
 ---
 

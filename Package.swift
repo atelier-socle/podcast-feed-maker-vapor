@@ -7,7 +7,8 @@ let package = Package(
     products: [
         .library(name: "PodcastFeedVapor", targets: ["PodcastFeedVapor"]),
         .library(name: "PodcastFeedVaporRedis", targets: ["PodcastFeedVaporRedis"]),
-        .library(name: "PodcastFeedVaporQueues", targets: ["PodcastFeedVaporQueues"])
+        .library(name: "PodcastFeedVaporQueues", targets: ["PodcastFeedVaporQueues"]),
+        .library(name: "PodcastFeedVaporMetrics", targets: ["PodcastFeedVaporMetrics"])
     ],
     dependencies: [
         .package(url: "https://github.com/atelier-socle/podcast-feed-maker.git", from: "0.2.0"),
@@ -16,6 +17,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/redis.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-metrics.git", from: "2.0.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3")
     ],
     targets: [
@@ -45,6 +47,14 @@ let package = Package(
                 .product(name: "QueuesRedisDriver", package: "queues-redis-driver")
             ]
         ),
+        // Metrics middleware extension
+        .target(
+            name: "PodcastFeedVaporMetrics",
+            dependencies: [
+                "PodcastFeedVapor",
+                .product(name: "Metrics", package: "swift-metrics")
+            ]
+        ),
         // Core tests
         .testTarget(
             name: "PodcastFeedVaporTests",
@@ -69,6 +79,16 @@ let package = Package(
                 "PodcastFeedVaporQueues",
                 "PodcastFeedVapor",
                 .product(name: "Queues", package: "queues"),
+                .product(name: "VaporTesting", package: "vapor")
+            ]
+        ),
+        // Metrics tests
+        .testTarget(
+            name: "PodcastFeedVaporMetricsTests",
+            dependencies: [
+                "PodcastFeedVaporMetrics",
+                "PodcastFeedVapor",
+                .product(name: "MetricsTestKit", package: "swift-metrics"),
                 .product(name: "VaporTesting", package: "vapor")
             ]
         )
