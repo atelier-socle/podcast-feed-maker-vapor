@@ -26,5 +26,8 @@
 /// - ``FeedConfiguration``: Centralized settings (TTL, gzip, pretty-print)
 /// - ``FeedResponseEncoder``: Converts `PodcastFeed` to HTTP Response
 /// - ``FeedMappable``: Protocol for model to feed conversion
+/// - ``StreamingCacheResponse``: Stream-through caching for large feeds
+/// - ``FeedCacheStore``: Protocol for cache backends
+/// - ``InMemoryFeedCache``: In-memory cache for development
 import PodcastFeedMaker
 import Vapor

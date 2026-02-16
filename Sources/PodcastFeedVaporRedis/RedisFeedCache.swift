@@ -2,30 +2,12 @@ import PodcastFeedVapor
 import Redis
 import Vapor
 
-/// Protocol for feed cache storage backends.
-///
-/// Allows swapping between Redis, in-memory, or custom implementations.
-/// The core library doesn't depend on Redis — only `PodcastFeedVaporRedis` does.
-public protocol FeedCacheStore: Sendable {
-    /// Retrieve cached feed XML for the given identifier.
-    func get(identifier: String) async throws -> String?
-
-    /// Store feed XML with a TTL (time-to-live) in seconds.
-    func set(identifier: String, xml: String, ttl: Int) async throws
-
-    /// Remove a specific cached feed.
-    func invalidate(identifier: String) async throws
-
-    /// Remove all cached feeds matching the prefix.
-    func invalidateAll() async throws
-}
-
-/// Redis-backed implementation of ``FeedCacheStore``.
+/// Redis-backed implementation of `FeedCacheStore`.
 ///
 /// Caches generated podcast feed XML in Redis with configurable TTL.
 /// Uses Vapor's Redis integration for connection pooling and async/await support.
 ///
-/// ```swift
+/// ```swift 
 /// import PodcastFeedVaporRedis
 ///
 /// // In configure.swift

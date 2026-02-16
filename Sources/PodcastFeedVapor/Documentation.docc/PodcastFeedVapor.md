@@ -55,6 +55,7 @@ func configure(_ app: Application) throws {
 - <doc:GettingStarted>
 - <doc:MiddlewareGuide>
 - <doc:FeedServingGuide>
+- <doc:StreamingCacheGuide>
 
 ### Integration
 
@@ -95,6 +96,13 @@ func configure(_ app: Application) throws {
 ### Batch Audit
 
 - ``BatchAuditResult``
+
+### Caching
+
+- ``FeedCacheStore``
+- ``InMemoryFeedCache``
+- ``StreamingCacheResponse``
+- ``XMLCollector``
 
 ### Health
 
