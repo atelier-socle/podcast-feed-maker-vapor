@@ -18,6 +18,8 @@ let package = Package(
         .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-metrics.git", from: "2.0.0"),
+        // Pinned < 1.10.0 — swift-log 1.10.0 contains .unsafeFlags() that breaks SPM dependency resolution.
+        .package(url: "https://github.com/apple/swift-log.git", "1.5.4"..<"1.10.0"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.62.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3")
     ],
