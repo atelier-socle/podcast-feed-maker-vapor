@@ -77,7 +77,7 @@ public struct PodpingNotifier: Sendable {
 }
 
 /// Reason for a Podping notification.
-public enum PodpingReason: String, Sendable, CaseIterable {
+public enum PodpingReason: String, Codable, Sendable, CaseIterable {
     /// A feed was updated (new episode, changed metadata).
     case update
     /// A livestream has started.
@@ -87,7 +87,7 @@ public enum PodpingReason: String, Sendable, CaseIterable {
 }
 
 /// Media type for a Podping notification.
-public enum PodpingMedium: String, Sendable, CaseIterable {
+public enum PodpingMedium: String, Codable, Sendable, CaseIterable {
     case podcast
     case music
     case video

@@ -35,6 +35,45 @@ Available media types (``PodpingMedium``): `podcast`, `music`, `video`, `film`, 
 
 Errors are reported as ``PodpingError`` — either `.serverError(statusCode)` or `.invalidEndpoint(url)`.
 
+### WebSocket Podping
+
+For real-time notifications, register a WebSocket endpoint with
+``PodpingWebSocketManager``. Clients connect and receive JSON messages
+when feeds are updated — no polling required.
+
+```swift
+// Register WebSocket endpoint
+app.podpingWebSocket("podping")
+
+// When a feed is updated, broadcast to all connected clients
+await app.podpingWebSocketManager.broadcast(
+    feedURL: "https://example.com/feed.xml",
+    reason: .update,
+    medium: .podcast
+)
+```
+
+Clients can subscribe to specific feeds by sending a JSON message:
+
+```json
+{
+    "kind": "subscribe",
+    "feedURLs": ["https://example.com/feed.xml"]
+}
+```
+
+Messages use ``PodpingMessage`` with these kinds:
+
+| Kind | Direction | Description |
+|------|-----------|-------------|
+| `welcome` | Server → Client | Sent on connection |
+| `notification` | Server → Client | Feed update notification |
+| `subscribed` | Server → Client | Subscription confirmation |
+| `subscribe` | Client → Server | Subscribe to feeds |
+| `unsubscribe` | Client → Server | Unsubscribe from feeds |
+
+Clients with no subscriptions receive all notifications (broadcast mode).
+
 ### Batch Feed Auditing
 
 Register a batch audit endpoint that scores multiple feeds in parallel using PodcastFeedMaker's `FeedAuditor`:

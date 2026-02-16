@@ -18,6 +18,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-metrics.git", from: "2.0.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.62.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3")
     ],
     targets: [
@@ -60,7 +61,8 @@ let package = Package(
             name: "PodcastFeedVaporTests",
             dependencies: [
                 "PodcastFeedVapor",
-                .product(name: "VaporTesting", package: "vapor")
+                .product(name: "VaporTesting", package: "vapor"),
+                .product(name: "NIOEmbedded", package: "swift-nio")
             ]
         ),
         // Redis tests

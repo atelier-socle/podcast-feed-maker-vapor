@@ -35,7 +35,7 @@ func configure(_ app: Application) throws {
 - **Route Builder** — `app.podcastFeed("feed.xml")` DSL for feed routes
 - **Streaming** — Chunked XML streaming for large feeds via `StreamingFeedGenerator`
 - **Pagination** — Query parameter parsing (`?limit=N&offset=N`) with safe clamping
-- **Podping** — Feed update notifications via webhook
+- **Podping** — Feed update notifications via webhook and real-time WebSocket
 - **Batch Audit** — Parallel feed quality scoring via `FeedAuditor`
 - **Fluent Mapping** — Protocol-based model-to-feed conversion
 - **Redis Cache** — Optional `FeedCacheStore` protocol + Redis implementation
@@ -93,6 +93,9 @@ func configure(_ app: Application) throws {
 - ``PodpingReason``
 - ``PodpingMedium``
 - ``PodpingError``
+- ``PodpingWebSocketManager``
+- ``PodpingMessage``
+- ``PodpingMessage/MessageKind-swift.enum``
 
 ### Batch Audit
 

@@ -29,5 +29,7 @@
 /// - ``StreamingCacheResponse``: Stream-through caching for large feeds
 /// - ``FeedCacheStore``: Protocol for cache backends
 /// - ``InMemoryFeedCache``: In-memory cache for development
+/// - ``PodpingWebSocketManager``: Real-time feed update notifications via WebSocket
+/// - ``PodpingMessage``: JSON messages for WebSocket Podping communication
 import PodcastFeedMaker
 import Vapor

@@ -20,7 +20,7 @@ Part of the [Atelier Socle](https://www.atelier-socle.com) ecosystem.
 - **Route Builder** — `app.podcastFeed("feed.xml")` DSL for feed routes
 - **Streaming** — Chunked XML streaming via `StreamingFeedGenerator` for large catalogs
 - **Pagination** — Query params parsing (`?limit=N&offset=N`) with safe clamping
-- **Podping** — Webhook notifications when feeds change
+- **Podping** — Feed update notifications via webhook and real-time WebSocket
 - **Batch Audit** — Parallel feed quality scoring with grades and recommendations
 - **Fluent Mapping** — Pure Swift protocols for model-to-feed conversion
 - **Redis Cache** — Optional `FeedCacheStore` protocol + Redis implementation
@@ -137,14 +137,27 @@ extension Episode: ItemMappable {
 let items = episodes.toItems()  // Array extension
 ```
 
-### Podping and Audit
+### Podping
 
-Notify aggregators when feeds change, and score feed quality in parallel:
+Webhook notifications via `PodpingNotifier` and real-time WebSocket via `PodpingWebSocketManager`:
 
 ```swift
+// Webhook (fire-and-forget)
 let notifier = PodpingNotifier(client: req.client, authToken: "token")
-try await notifier.notify(feedURL: "https://example.com/feed.xml", reason: .update)
+try await notifier.notify(feedURL: "https://example.com/feed.xml")
 
+// WebSocket (real-time, persistent)
+app.podpingWebSocket("podping")
+await app.podpingWebSocketManager.broadcast(
+    feedURL: "https://example.com/feed.xml"
+)
+```
+
+### Batch Audit
+
+Score feed quality in parallel:
+
+```swift
 app.batchAudit("feeds", "audit")
 // GET /feeds/audit?urls=https://a.com/feed.xml,https://b.com/feed.xml
 ```
@@ -199,6 +212,9 @@ Sources/
         StreamingFeedResponse.swift
         FluentFeedMapping.swift
         PodpingNotifier.swift
+        PodpingMessage.swift
+        PodpingWebSocketManager.swift
+        PodpingWebSocketRoute.swift
         BatchAuditEndpoint.swift
         HealthCheck.swift
         Extensions/
@@ -246,7 +262,7 @@ See [`scripts/setup-sample-server.sh`](scripts/setup-sample-server.sh) for the f
 
 - [x] **Streaming cache** — Stream-through caching for very large feeds
 - [x] **Metrics** — Prometheus/StatsD middleware for feed serving metrics
-- [ ] **WebSocket Podping** — Real-time podping via WebSocket instead of webhook
+- [x] **WebSocket Podping** — Real-time podping via WebSocket instead of webhook
 
 ---
 
