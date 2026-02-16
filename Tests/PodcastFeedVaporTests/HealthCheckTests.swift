@@ -36,7 +36,7 @@ struct HealthCheckTests {
                     afterResponse: { res in
                         let body = res.body.string
                         #expect(body.contains("version"))
-                        #expect(body.contains("0.1.0"))
+                        #expect(body.contains("0.2.0"))
                     }
                 )
             }
@@ -81,13 +81,13 @@ struct HealthCheckTests {
 
     @Test("HealthResponse is Codable")
     func healthResponseCodable() throws {
-        let response = HealthResponse(status: "ok", version: "0.1.0", uptime: 3600)
+        let response = HealthResponse(status: "ok", version: "0.2.0", uptime: 3600)
         let encoder = JSONEncoder()
         let data = try encoder.encode(response)
         let decoder = JSONDecoder()
         let decoded = try decoder.decode(HealthResponse.self, from: data)
         #expect(decoded.status == "ok")
-        #expect(decoded.version == "0.1.0")
+        #expect(decoded.version == "0.2.0")
         #expect(decoded.uptime == 3600)
     }
 }

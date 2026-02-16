@@ -45,7 +45,7 @@ Add the dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/atelier-socle/podcast-feed-maker-vapor.git", from: "0.1.0")
+    .package(url: "https://github.com/atelier-socle/podcast-feed-maker-vapor.git", from: "0.2.0")
 ]
 ```
 

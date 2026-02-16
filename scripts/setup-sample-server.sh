@@ -33,6 +33,7 @@ let package = Package(
             name: "App",
             dependencies: [
                 .product(name: "PodcastFeedVapor", package: "podcast-feed-maker-vapor"),
+                .product(name: "PodcastFeedVaporMetrics", package: "podcast-feed-maker-vapor"),
                 .product(name: "Vapor", package: "vapor"),
             ]
         ),
@@ -169,9 +170,12 @@ cat > "$TARGET/Sources/App/App.swift" << 'EOF'
 //   curl http://localhost:8080/rich/feed.xml
 //   curl http://localhost:8080/shows/my-show/feed.xml?limit=5&offset=10
 //   curl http://localhost:8080/feeds/audit?urls=https://feeds.simplecast.com/54nAGcIl
+//   curl -sI http://localhost:8080/cached/feed.xml
+//   curl -X POST "http://localhost:8080/notify?url=https://example.com/feed.xml"
 
 import Vapor
 import PodcastFeedVapor
+import PodcastFeedVaporMetrics
 
 @main
 struct App {
@@ -186,7 +190,8 @@ struct App {
         )
 
         // ─── Middleware Stack ───
-        // Order matters: CORS first, then cache, then generator header
+        // Order matters: metrics first (captures all), CORS, cache, generator header
+        app.middleware.use(FeedMetricsMiddleware())
         app.middleware.use(CORSFeedMiddleware())
         app.middleware.use(FeedCacheMiddleware(ttl: CacheControlDuration.minutes(5)))
         app.middleware.use(PodcastFeedMiddleware())
@@ -218,6 +223,37 @@ struct App {
                 limit: pagination.limit,
                 offset: pagination.offset
             )
+        }
+
+        // ─── Streaming Cache ───
+
+        // Cached feed with InMemoryFeedCache: GET /cached/feed.xml
+        let cache = InMemoryFeedCache()
+        app.get("cached", "feed.xml") { req -> Response in
+            try await StreamingCacheResponse.stream(
+                makeStaticFeed(),
+                for: req,
+                cache: cache,
+                identifier: "cached-feed",
+                ttl: .minutes(5)
+            )
+        }
+
+        // ─── WebSocket Podping ───
+
+        // WebSocket endpoint: ws://localhost:8080/podping
+        app.podpingWebSocket("podping")
+
+        // POST /notify?url=...&reason=... — triggers broadcast to connected WebSocket clients
+        app.post("notify") { req async -> HTTPStatus in
+            let feedURL: String = (try? req.query.get(String.self, at: "url")) ?? "https://example.com/feed.xml"
+            let reasonStr: String = (try? req.query.get(String.self, at: "reason")) ?? "update"
+            let reason = PodpingReason(rawValue: reasonStr) ?? .update
+            await req.application.podpingWebSocketManager.broadcast(
+                feedURL: feedURL,
+                reason: reason
+            )
+            return .ok
         }
 
         // Non-RSS JSON route (to verify middleware skips non-feed responses)
@@ -264,6 +300,9 @@ The server starts on `http://localhost:8080`.
 | GET | `/shows/:showId/feed.xml` | Dynamic feed with route parameters |
 | GET | `/shows/:showId/feed.xml?limit=N&offset=N` | Dynamic feed with pagination |
 | GET | `/feeds/audit?urls=URL1,URL2` | Batch audit — parallel feed quality scoring |
+| GET | `/cached/feed.xml` | Cached feed with InMemoryFeedCache (stream-through) |
+| WS | `/podping` | WebSocket Podping — real-time feed update notifications |
+| POST | `/notify?url=...&reason=...` | Trigger broadcast to WebSocket clients |
 | OPTIONS | `/feed.xml` | CORS preflight |
 | GET | `/api/status` | Non-RSS JSON endpoint (middleware skip test) |
 
@@ -291,6 +330,22 @@ curl -s http://localhost:8080/rich/feed.xml | xmllint --format -
 # Batch audit
 curl -s "http://localhost:8080/feeds/audit?urls=https://feeds.simplecast.com/54nAGcIl" | python3 -m json.tool
 
+# Cached feed — first request generates + caches (no ETag)
+curl -sI http://localhost:8080/cached/feed.xml
+# Second request — served from cache (has ETag)
+curl -sI http://localhost:8080/cached/feed.xml
+
+# WebSocket Podping (requires websocat or wscat)
+websocat ws://localhost:8080/podping
+# In another terminal:
+curl -X POST "http://localhost:8080/notify?url=https://example.com/feed.xml&reason=update"
+# → WebSocket client receives JSON notification
+
+# Subscribe to specific feed (type in websocat):
+# {"kind":"subscribe","feedURLs":["https://example.com/feed.xml"]}
+
+# Metrics are recorded silently (visible with a metrics backend like Prometheus)
+
 # Verify non-RSS middleware skip
 curl -sI http://localhost:8080/api/status | grep -E "x-generator|cache-control|etag"
 # (should return nothing — middlewares skip non-RSS responses)
@@ -306,6 +361,10 @@ curl -sI http://localhost:8080/api/status | grep -E "x-generator|cache-control|e
 - **FeedPagination** — Query parameter parsing with clamping
 - **BatchAuditEndpoint** — Parallel feed quality scoring with grades
 - **HealthCheck** — JSON status with version and uptime
+- **FeedMetricsMiddleware** — Request counters, latency timers, response size recording
+- **InMemoryFeedCache** — In-memory cache with TTL for dev/testing
+- **StreamingCacheResponse** — Stream-through caching with ETag on cache hit
+- **PodpingWebSocketManager** — Real-time feed update notifications via WebSocket
 
 ## Architecture Note
 
@@ -328,3 +387,5 @@ echo ""
 echo "Then test with:"
 echo "  curl http://localhost:8080/health"
 echo "  curl http://localhost:8080/feed.xml"
+echo "  curl -sI http://localhost:8080/cached/feed.xml"
+echo "  websocat ws://localhost:8080/podping"
