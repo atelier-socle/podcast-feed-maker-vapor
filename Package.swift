@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "PodcastFeedVaporMetrics", targets: ["PodcastFeedVaporMetrics"])
     ],
     dependencies: [
-        .package(url: "https://github.com/atelier-socle/podcast-feed-maker.git", from: "0.2.0"),
+        .package(url: "https://github.com/atelier-socle/podcast-feed-maker.git", from: "0.3.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.121.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/redis.git", from: "4.0.0"),

@@ -12,7 +12,7 @@ Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/atelier-socle/podcast-feed-maker-vapor.git", from: "0.2.0")
+    .package(url: "https://github.com/atelier-socle/podcast-feed-maker-vapor.git", from: "0.3.0")
 ]
 ```
 
@@ -72,7 +72,7 @@ app.feedConfiguration = FeedConfiguration(
 ```bash
 # Health check
 curl http://localhost:8080/health
-# → {"status":"ok","version":"0.2.0","uptime":42}
+# → {"status":"ok","version":"0.3.0","uptime":42}
 
 # Feed
 curl http://localhost:8080/feed.xml

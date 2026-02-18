@@ -32,7 +32,7 @@ extension Application {
     ///
     /// ```swift
     /// app.healthCheck()
-    /// // GET /health → {"status":"ok","version":"0.2.0","uptime":3600}
+    /// // GET /health → {"status":"ok","version":"0.3.0","uptime":3600}
     /// ```
     ///
     /// - Parameter path: The route path for the health endpoint. Defaults to `"health"`.
@@ -43,7 +43,7 @@ extension Application {
             let uptime = Int(Date().timeIntervalSince(startTime))
             return HealthResponse(
                 status: "ok",
-                version: "0.2.0",
+                version: "0.3.0",
                 uptime: uptime
             )
         }

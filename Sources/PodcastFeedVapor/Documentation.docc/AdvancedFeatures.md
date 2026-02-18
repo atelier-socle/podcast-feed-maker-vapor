@@ -116,7 +116,7 @@ app.healthCheck(path: "hz") // GET /hz (custom path)
 Returns a ``HealthResponse`` with service status, library version, and server uptime:
 
 ```json
-{"status": "ok", "version": "0.2.0", "uptime": 3600}
+{"status": "ok", "version": "0.3.0", "uptime": 3600}
 ```
 
 ## Next Steps

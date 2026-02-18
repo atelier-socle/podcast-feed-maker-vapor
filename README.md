@@ -36,7 +36,7 @@ Part of the [Atelier Socle](https://www.atelier-socle.com) ecosystem.
 
 - **Swift 6.2+** with strict concurrency
 - **Vapor 4.121+**
-- **PodcastFeedMaker 0.2.0+**
+- **PodcastFeedMaker 0.3.0+**
 - **Platforms**: macOS 14+ · Linux (Ubuntu 22.04+)
 
 ### Swift Package Manager
@@ -45,7 +45,7 @@ Add the dependency to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/atelier-socle/podcast-feed-maker-vapor.git", from: "0.2.0")
+    .package(url: "https://github.com/atelier-socle/podcast-feed-maker-vapor.git", from: "0.3.0")
 ]
 ```
 

@@ -60,7 +60,7 @@ struct GettingStartedShowcase {
                         #expect(res.status == .ok)
                         let body = res.body.string
                         #expect(body.contains("\"status\":\"ok\""))
-                        #expect(body.contains("\"version\":\"0.2.0\""))
+                        #expect(body.contains("\"version\":\"0.3.0\""))
                         #expect(body.contains("\"uptime\":"))
                     }
                 )
