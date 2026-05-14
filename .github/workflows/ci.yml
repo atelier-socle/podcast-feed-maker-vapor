@@ -24,7 +24,7 @@ jobs:
     name: "Lint"
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install SwiftLint
         run: brew install swiftlint
       - name: Install swift-format
@@ -36,13 +36,21 @@ jobs:
 
   # ---------- Build & Test (macOS) ----------
   build-and-test:
-    name: "macOS (Swift 6.2)"
+    name: "macOS (Swift ${{ matrix.swift }})"
     runs-on: macos-26
     needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - swift: "6.2"
+            xcode: "/Applications/Xcode_26.2.app"
+          - swift: "6.3"
+            xcode: "/Applications/Xcode_26.4.app"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_26.2.app
+        run: sudo xcode-select -s ${{ matrix.xcode }}
       - name: Swift Version
         run: swift --version
       - name: Build
@@ -58,7 +66,9 @@ jobs:
               -instr-profile="$PROF_DATA" \
               -ignore-filename-regex='\.build|Tests'
           fi
+      # Coverage is exported and uploaded once, from the Swift 6.2 leg only — avoids duplicate Codecov reports.
       - name: Generate lcov Coverage
+        if: matrix.swift == '6.2'
         run: |
           PROF_DATA=$(find .build -name "default.profdata" -type f | head -1)
           TEST_BIN=$(find .build -name "podcast-feed-maker-vaporPackageTests" -type f ! -name "*.o" -not -path "*.dSYM*" | head -1)
@@ -70,7 +80,8 @@ jobs:
               > coverage.lcov
           fi
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v5
+        if: matrix.swift == '6.2'
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.lcov
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -84,7 +95,7 @@ jobs:
     container:
       image: swift:6.2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Swift Version
         run: swift --version
       - name: Build
