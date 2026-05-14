@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atelier Socle SAS
 
-# release.yml — Create GitHub Release on tag push.
+# release.yml — Build, test, and create a GitHub Release on tag push.
 #
 # Triggers on semver tags WITHOUT "v" prefix (e.g. 0.1.0, 1.2.3).
-# Creates a GitHub Release with auto-generated release notes.
+# The build job validates the tagged commit (Xcode 26.4 / Swift 6.3) before
+# the release is published — a broken tag never reaches a GitHub Release.
 # This is a library — no binaries to attach.
 
 name: Release
@@ -21,12 +22,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ---------- Build & Test ----------
+  build:
+    name: "Build & Test (Swift 6.3)"
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.4.app
+      - name: Swift Version
+        run: swift --version
+      - name: Build
+        run: swift build
+      - name: Test
+        run: swift test
+
+  # ---------- Create Release ----------
   release:
     name: "Create Release"
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
