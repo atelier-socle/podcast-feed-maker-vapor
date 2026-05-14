@@ -18,9 +18,14 @@ let package = Package(
         .package(url: "https://github.com/vapor/queues.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/queues-redis-driver.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-metrics.git", from: "2.0.0"),
-        // Pinned < 1.10.0 — swift-log 1.10.0 contains .unsafeFlags() that breaks SPM dependency resolution.
-        .package(url: "https://github.com/apple/swift-log.git", "1.5.4"..<"1.10.0"),
+        // Pinned >= 1.10.1 — swift-log 1.10.0 was a broken release (hotfixed by 1.10.1 the same
+        // day); 1.10.1+ resolves cleanly and is required by async-kit 1.22.0.
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.10.1"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.62.0"),
+        // Pinned >= 1.22.0 — async-kit < 1.22.0 enables the MemberImportVisibility upcoming
+        // feature but its source omits the direct DequeModule/OrderedCollections imports,
+        // which fails to build on Xcode 26.2 / 26.4. 1.22.0 adds the missing imports.
+        .package(url: "https://github.com/vapor/async-kit.git", from: "1.22.0"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3")
     ],
     targets: [
